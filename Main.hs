@@ -5,7 +5,6 @@ module Main where
 import Control.Concurrent
 import Control.Monad
 import Control.Monad.State
-import Data.Monoid
 import System.Console.Haskeline
 import System.Random
 
@@ -62,16 +61,13 @@ playerUpLeftUpRight = forever $ do
     b3 <- moveDirection North
     b4 <- moveDirection East
     -- Unstuck ourselves when necessary
-    when (allFalse [b1,b2,b3,b4]) $
+    unless (b1 || b2 || b3 || b4) $
         void $ moveDirection South
-  where
-    allFalse :: [Bool] -> Bool
-    allFalse = not . getAny . mconcat . map Any
 
 -- Another pro strat: up/right until you can't move, then up/left until you
 -- can't move, and repeat.
 playerUpLeftUpRight2 :: Player IO ()
-playerUpLeftUpRight2 = forever $ upLeft
+playerUpLeftUpRight2 = forever upLeft
   where
     upLeft :: Player IO ()
     upLeft = forever $ do
